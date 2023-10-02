@@ -195,21 +195,18 @@ app.delete('/foods/:ITEM_ID', (req, res) => {
 
 	pool.getConnection()
 		.then(connection => {
+			// if food is deleted, 
 			connection.query('DELETE FROM foods WHERE ITEM_ID = ?', [ITEM_ID])
 				.then(rows => {
 					connection.end();
-					res.status(200).json({ message: 'Food was deleted successfully' });
 				})
 				.catch(err => {
 					connection.end();
 					console.log(err);
-					res.status(404).json({ error: 'Could not find food to delete' });
 				});
 		})
-		.catch(err => {
-			console.log(err);
-			res.status(500).json({ error: 'Internal server error' });
-		});
+		.catch(err => console.log(err));
+
 });
 
 /**
@@ -352,7 +349,7 @@ app.get('/students', (req, res) => {
  */
 app.post('/students', (req, res) => {
 	// gets student attributes from request body
-	const {NAME, TITLE, CLASS, SECTION, ROLLID} = req.body;
+	const { NAME, TITLE, CLASS, SECTION, ROLLID } = req.body;
 
 	pool.getConnection()
 		.then(connection => {
