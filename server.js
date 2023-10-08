@@ -385,14 +385,7 @@ app.post('/students', (req, res) => {
 app.get('/say', async (req, res) => {
 	const { keyword } = req.query;
 
-	// if there is no keyword, we respond saying there is no keyword
-	if (!keyword) {
-		res.status(400);
-		res.send("There is no keyword. Please put in a keyword.");
-		return;
-	}
-
-	// This gets data from the function in the cloud
+	// this attempts to get data from the function in the cloud
 	try {
 		const response = await axios.get(`https://jbnr19r7ni.execute-api.us-east-1.amazonaws.com/new/say?keyword=${keyword}`);
 		res.status(response.status).json(response.data);
