@@ -7,6 +7,7 @@ const swaggerUI = require('swagger-ui-express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mariadb = require('mariadb');
+const axios = require('axios');
 
 const pool = mariadb.createPool({
 	host: 'localhost',
@@ -209,6 +210,20 @@ app.delete('/foods/:ITEM_ID', (req, res) => {
 
 });
 
+app.get('/say', (req, res) => {
+	const { keyword } = req.query;
+
+	// Check if a keyword is provided
+	if (!keyword) {
+		res.status(400);
+		res.send("There is no keyword. Please put in a keyword.");
+		return;
+	}
+
+	// sends the keyword to the user 
+	res.send(`Ajay says ${keyword}.`);
+});
+
 /**
  * @swagger
  * /companies:
@@ -365,6 +380,26 @@ app.post('/students', (req, res) => {
 				})
 		})
 		.catch(err => console.log(err));
+});
+
+app.get('/say', async (req, res) => {
+	const { keyword } = req.query;
+
+	// if there is no keyword, we respond saying there is no keyword
+	if (!keyword) {
+		res.status(400);
+		res.send("There is no keyword. Please put in a keyword.");
+		return;
+	}
+
+	// This gets data from the function in the cloud
+	try {
+		const response = await axios.get(`https://jbnr19r7ni.execute-api.us-east-1.amazonaws.com/new/say?keyword=${keyword}`);
+		res.status(response.status).json(response.data);
+	} catch (error) {
+		res.status(500).json({ error: 'There is an internal server error' });
+	}
+
 });
 
 app.listen(port, () => {
