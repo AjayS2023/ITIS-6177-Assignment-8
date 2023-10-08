@@ -388,9 +388,11 @@ app.get('/say', async (req, res) => {
 	// this attempts to get data from the function in the cloud
 	try {
 		const response = await axios.get(`https://jbnr19r7ni.execute-api.us-east-1.amazonaws.com/new/say?keyword=${keyword}`);
-		res.status(response.status).json(response.data);
+		res.status(response.status);
+		res.send(response.data);
 	} catch (error) {
-		res.status(500).json({ error: 'There is an internal server error' });
+		res.status(500);
+		res.send('There is an internal server error');
 	}
 
 });
